@@ -33,8 +33,8 @@ for row in range(end_of_crates - 1, -1, -1):
 for index in range(end_of_crates + 2, len(data)):
     m = re.match(r"move (\d+) from (\d+) to (\d+)", data[index])
     print(m.groups())
-    for count in range(0, int(m.group(1))):
-        x = stacks[int(m.group(2)) - 1].pop()
+    for count in range(int(m.group(1)),0,-1 ):
+        x = stacks[int(m.group(2)) - 1].pop(-count)
         stacks[int(m.group(3)) - 1].append(x)
 
         a = ""
