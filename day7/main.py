@@ -6,63 +6,43 @@ cwd_split = [""]
 cwd = "/"
 line_in_file = 1
 file_length = len(data)
-
-
-def ls():
-    total_size = 0
-    global line_in_file
-    global file_length
-    while line_in_file < file_length and "$" not in data[line_in_file]:
-        if "dir " in data[line_in_file]:
-            (_, dir) = data[line_in_file].split(" ")
-            if cwd == "/":
-                p = "/" + dir
-            else:
-                p = cwd + "/" + dir
-
-            tree[p] = [0]
-            tree[cwd].append(dir)
-        else:
-            (size, _) = data[line_in_file].split(" ")
-            total_size += int(size)
-            tree[cwd][0] = total_size
-        line_in_file += 1
-
+sizes = {"/": 0}
 
 while line_in_file < file_length:
     line = data[line_in_file]
     if line[0] == "$":
         # command
         if "$ ls" in line:
-
-            line_in_file += 1
-            ls()
+            pass
         elif "cd .." in line:
+            sub_size = sizes[cwd]
             cwd_split.pop()
-            line_in_file += 1
-        elif "cd " in line:
-            (_, _, dir) = data[line_in_file].split(" ")
-            cwd_split.append(dir)
             cwd = "/".join(cwd_split)
-            line_in_file += 1
-
-
-print(tree)
-go = "/"
-
-
-def calc_len(path):
-    t = tree[path]
-    total_length = t[0]
-    for index in range(1, len(t)):
-        if path == "/":
-            p = "/" + t[index]
+            if cwd == "//":
+                cwd = "/"
+        elif "cd " in line:
+            dd = data[line_in_file].split(" ")
+            cwd_split.append(dd[-1])
+            cwd = "/".join(cwd_split)
+            assert cwd not in sizes
+            sizes[cwd] = 0
         else:
-            p = path + "/" + t[index]
-        l = calc_len(p)
-        total_length += l
+            assert False
+    else:
+        if "dir " in data[line_in_file]:
+            (_, dir) = data[line_in_file].split(" ")
+        else:
+            (size, _) = data[line_in_file].split(" ")
+            sizes[cwd] = sizes[cwd] + int(size)
+    line_in_file += 1
 
-    print(path, total_length)
 
+print(sizes)
+sum = 0
+for i in sizes:
+    if sizes[i] <= 100000:
+        sum += sizes[i]
+    else:
+        print(i, sizes[i])
 
-calc_len("")
+print(sum)
