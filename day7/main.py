@@ -1,27 +1,23 @@
 data = [l.rstrip() for l in open("day7/in.txt")]
 import re
 
-tree = {"/": [0]}
 cwd_split = [""]
 cwd = "/"
-line_in_file = 1
-file_length = len(data)
 sizes = {"/": 0}
 
-while line_in_file < file_length:
-    line = data[line_in_file]
+for line in data:
     if line[0] == "$":
         # command
         if "$ ls" in line:
             pass
-        elif "cd .." in line:
+        elif "$ cd .." in line:
             sub_size = sizes[cwd]
             cwd_split.pop()
             cwd = "/".join(cwd_split)
             if cwd == "//":
                 cwd = "/"
-        elif "cd " in line:
-            dd = data[line_in_file].split(" ")
+        elif "$ cd " in line:
+            dd = line.split(" ")
             cwd_split.append(dd[-1])
             cwd = "/".join(cwd_split)
             assert cwd not in sizes
@@ -29,12 +25,11 @@ while line_in_file < file_length:
         else:
             assert False
     else:
-        if "dir " in data[line_in_file]:
-            (_, dir) = data[line_in_file].split(" ")
+        if "dir " in line[0:4]:
+            (_, dir) = line.split(" ")
         else:
-            (size, _) = data[line_in_file].split(" ")
+            (size, _) = line.split(" ")
             sizes[cwd] = sizes[cwd] + int(size)
-    line_in_file += 1
 
 
 print(sizes)
