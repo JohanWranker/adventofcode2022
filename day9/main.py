@@ -12,14 +12,18 @@ true_table = [
     [0, 0, 0, 1, 1, 0],
     [0, 0, 1, 1, 0, 0],
 ]
+
+#class knot:
+#    def __init__():
 head = [0, 0]
 tail = [0, 0]
 visit = {"0x0": 1}
 one_of_table = {"R": [0, 1], "L": [0, -1], "D": [-1, 0], "U": [1, 0]}
 
 for line in data:
-    direction = line[0]
-    steps = int(line[2])
+    l = line.split(" ")
+    direction = l[0]
+    steps = int(l[1])
     vector = one_of_table[direction]
 
     if line in "L 3":
@@ -40,13 +44,14 @@ for line in data:
         tail[0] += step[0]
         tail[1] += step[1]
 
-        #if true_table[tail[0]][tail[1]] == 0:
+        diff2 = [head[0] - tail[0], head[1] - tail[1]]
+        if abs(diff2[0]) > 2 or abs(diff2[1]) > 2:
+            assert False
+
+        # if true_table[tail[0]][tail[1]] == 0:
         #    assert False
 
         pos_array = f"{tail[0]}x{tail[1]}"
-        if pos_array not in visit:
-            visit[pos_array] = 1
-        else:
-            visit[pos_array] += 1
+        visit[pos_array] = "x"
 
 print(len(visit))
