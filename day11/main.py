@@ -120,7 +120,7 @@ class Monkey:
         return [n["name"] for n in self.my_items]
 
     def do(self):
-        print(f"Moknet {self.name} {self.my_vals()}")
+        # print(f"Moknet {self.name} {self.my_vals()}")
         for count in range(len(self.my_items)):
             self.handled += 1
             item = self.my_items[0]
@@ -135,6 +135,10 @@ class Monkey:
             # )
             # divmod(item["level"], item["name"])[1]
             # item["level"] = rules(item)
+            item["level"] = item["level"] % (
+                3 * 13 * 19 * 17 * 5 * 7 * 11 * 2
+            )  # (23 * 19 * 13 * 17)
+            print(item["level"])
 
             if divmod(item["level"], self.test_operation)[1] == 0:
                 monkeys[self.throw_true].catch(item)
@@ -153,8 +157,7 @@ while fd.readable():
 
 
 def tryit():
-    for i in range(100):
-        global monkeys
+    for i in range(10000):
         for monkey in monkeys:
             monkey.do()
         if i in table:
@@ -163,10 +166,10 @@ def tryit():
                 oo = table[i][m]
                 handled = monkeys[m].handled
                 if oo == handled:
-                    pass
+                    print(f"IN {i} Monkey {m} exp{oo} got {monkeys[m].handled}")
                 else:
                     print(f"IN {i} Monkey {m} exp{oo} got {monkeys[m].handled}")
-                    is_ok = False
+                    # is_ok = False
             if not is_ok:
                 print(f"MEAD {sum([x.sum() for x in monkeys]) / 10}")
                 break
@@ -175,7 +178,7 @@ def tryit():
 
 maxit = 0
 imax = 0
-for iii in range(1, 4):
+for iii in range(1):
     div_by = iii
     monkeys = copy.deepcopy(monkeys_root)
     b = tryit()
@@ -184,7 +187,6 @@ for iii in range(1, 4):
         maxit = b
         imax = iii
 print(maxit, imax)
-exit()
 print(maxit)
 [print(f"Monkey {m.name}: {m.p()}") for m in monkeys]
 a = sorted([m.handled for m in monkeys])
